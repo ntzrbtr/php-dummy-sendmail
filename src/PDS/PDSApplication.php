@@ -1,12 +1,15 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PDS;
 
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
- * Created to allow for a single command without needing it to be specified
- * specifically.
+ * Created to allow for a single command without needing it to be specified specifically.
  *
  * @author Zaahid Bateson <zbateson@users.noreply.github.com>
  */
@@ -18,7 +21,7 @@ class PDSApplication extends Application
      * @param InputInterface $input The input interface
      * @return string The command name
      */
-    protected function getCommandName(InputInterface $input)
+    protected function getCommandName(InputInterface $input): string
     {
         return 'sendmail';
     }
@@ -26,9 +29,9 @@ class PDSApplication extends Application
     /**
      * Appends SendMailCommand as a default command.
      *
-     * @return array An array of default Command instances
+     * @return array An array of default command instances
      */
-    protected function getDefaultCommands()
+    protected function getDefaultCommands(): array
     {
         // Keep the core default commands to have the HelpCommand
         // which is used when using the --help option
@@ -38,13 +41,11 @@ class PDSApplication extends Application
     }
 
     /**
-     * Overridden so that the application doesn't expect the command
-     * name to be the first argument.
-     * 
-     * @return InputDefinition the definition object after clearing the first
-     *      argument
+     * Overridden so that the application doesn't expect the command name to be the first argument.
+     *
+     * @return InputDefinition the definition object after clearing the first argument
      */
-    public function getDefinition()
+    public function getDefinition(): InputDefinition
     {
         $inputDefinition = parent::getDefinition();
         // clear out the normal first argument, which is the command name

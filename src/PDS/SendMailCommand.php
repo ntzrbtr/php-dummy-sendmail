@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace PDS;
 
 use Symfony\Component\Console\Command\Command;
@@ -14,7 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SendMailCommand extends Command
 {
-    protected function configure()
+    /**
+     * @inheritDoc
+     */
+    protected function configure(): void
     {
         $this
             ->setName('sendmail')
@@ -68,8 +74,14 @@ class SendMailCommand extends Command
             )
             ->ignoreValidationErrors();
     }
-    
-    protected function getIncrementedFileName($file)
+
+    /**
+     * Returns the next incremented number from the file.
+     *
+     * @param string $file The file to read from
+     * @return int The next incremented number
+     */
+    protected function getIncrementedFileName(string $file): int
     {
         $next = 0;
         $fp = fopen($file, 'c+');
@@ -85,8 +97,11 @@ class SendMailCommand extends Command
         fclose($fp);
         return $next;
     }
-    
-    protected function execute(InputInterface $input, OutputInterface $output)
+
+    /**
+     * @inheritDoc
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('to');
         $dir = rtrim($input->getOption('directory'), '/') . '/';
@@ -102,7 +117,7 @@ class SendMailCommand extends Command
             }
             chdir($dir);
         }
-        
+
         $file = '';
         if ($input->getOption('print')) {
             if ($output->isDebug()) {
@@ -143,12 +158,14 @@ class SendMailCommand extends Command
             $output->writeln('[Debug] inFile=' . $inFile);
             $output->writeln('[Debug] outFile=' . $file);
         }
-        
+
         $body = file_get_contents($inFile);
         file_put_contents($file, $body);
-        
+
         if (!$input->getOption('print')) {
             @chmod($file, 0744);
         }
+
+        return 0;
     }
 }

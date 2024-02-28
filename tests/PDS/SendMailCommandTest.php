@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use PDS\SendMailCommand;
 use PDS\PDSApplication;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -15,7 +17,10 @@ class SendMailCommandTest extends TestCase
 {
     protected $application;
     protected $command;
-    
+
+    /**
+     * @inheritDoc
+     */
     public function __construct()
     {
         parent::__construct();
@@ -23,8 +28,11 @@ class SendMailCommandTest extends TestCase
         $application->add(new SendMailCommand());
         $this->command = $application->find('sendmail');
     }
-    
-    public function testReadWrite()
+
+    /**
+     * Test normal execution (i.e. writing mails to a file).
+     */
+    public function testReadWrite(): void
     {
         $tester = new CommandTester($this->command);
         $tester->execute([
@@ -38,23 +46,29 @@ class SendMailCommandTest extends TestCase
         $file = $matches[1];
         $this->assertFileEquals(dirname(__DIR__) . '/output/' . $file, dirname(__DIR__) . '/data/email.txt');
     }
-    
-    public function testPrint()
+
+    /**
+     * Test verbose execution (i.e. printing to the console)..
+     */
+    public function testPrint(): void
     {
         $tester = new CommandTester($this->command);
-        
+
         // PHPUnit's expectOutputString doesn't apply cause we're not using echo it seems
         $tester->execute([
             '--directory' => dirname(__DIR__) . '/output',
             '--input-file' => '../data/email.txt',
             '--print' => true
         ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
-        
+
         $this->assertContains('[Debug] printing to php://stdout', $tester->getDisplay());
         $this->assertContains('[Debug] outFile=php://stdout', $tester->getDisplay());
     }
-    
-    public function testFormat()
+
+    /**
+     * Test file extension.
+     */
+    public function testFormat(): void
     {
         $tester = new CommandTester($this->command);
         $tester->execute([
@@ -63,24 +77,27 @@ class SendMailCommandTest extends TestCase
             '--timestamp' => 'YmdHisu',
             '--file-extension' => '.mime'
         ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
-        
+
         $this->assertRegExp('/\[Debug\] outFile=\d{20}\.mime/', $tester->getDisplay());
         preg_match('/\[Debug\] outFile=(.*)/', $tester->getDisplay(), $matches);
     }
-    
-    public function testIncrement()
+
+    /**
+     * Test incrementing file names.
+     */
+    public function testIncrement(): void
     {
         $tester = new CommandTester($this->command);
         $randIncr = 'incr-test-' . mt_rand();
         $incrFile = dirname(__DIR__) . '/output/randIncr';
-        
+
         $next = 1;
         if (file_exists($incrFile)) {
             $next = file_get_contents($incrFile);
         } else {
             $next = intval($next);
         }
-        
+
         for ($i = 0; $i < 5; ++$i) {
             $tester->execute([
                 '--directory' => dirname(__DIR__) . '/output',
@@ -92,8 +109,11 @@ class SendMailCommandTest extends TestCase
             ++$next;
         }
     }
-    
-    public function testWithNonExistentParameters()
+
+    /**
+     * Test with non-existent parameters.
+     */
+    public function testWithNonExistentParameters(): void
     {
         $tester = new CommandTester($this->command);
         $tester->execute([
@@ -101,10 +121,10 @@ class SendMailCommandTest extends TestCase
             '--input-file' => '../data/email.txt',
             '-f' => 'test@example.com'
         ], ['verbosity' => OutputInterface::VERBOSITY_DEBUG]);
-        
+
         $this->assertRegExp('/\[Debug\] outFile=.*/', $tester->getDisplay());
         preg_match('/\[Debug\] outFile=(.*)/', $tester->getDisplay(), $matches);
-        
+
         $file = $matches[1];
         $this->assertFileEquals(dirname(__DIR__) . '/output/' . $file, dirname(__DIR__) . '/data/email.txt');
     }
