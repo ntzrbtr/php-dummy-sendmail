@@ -1,0 +1,18 @@
+{
+  "finder": [
+    {
+      "name": "*.*",
+      "in": "src"
+    },
+    {
+      "name": "*.*",
+      "in": "vendor"
+    }
+  ],
+  "compactors": [
+    "KevinGH\\Box\\Compactor\\PhpScoper"
+  ],
+  "git-version": "VERSION",
+  "main": "sendmail",
+  "output": "php-dummy-sendmail.phar"
+}

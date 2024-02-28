@@ -1,3 +1,5 @@
 vendor
-build
+
 .idea/
+
+php-dummy-sendmail.phar

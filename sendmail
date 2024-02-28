@@ -1,27 +1,13 @@
-#!/usr/bin/env php
 <?php
-// copied from phpunit
-foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
-    if (file_exists($file)) {
-        define('SENDMAIL_COMPOSER_INSTALL', $file);
-        break;
-    }
-}
+// Disable time limit.
+set_time_limit(0);
 
-unset($file);
+// Define the base path of the application.
+define('APP_BASE_PATH', Phar::running() ? Phar::running() : dirname(__FILE__));
 
-if (!defined('SENDMAIL_COMPOSER_INSTALL')) {
-    fwrite(STDERR, 'ERROR: Composer dependencies not properly set up! Run "composer install" or see README.md for more details' . PHP_EOL);
-    die(1);
-}
+// Include Composer's autoloader.
+$loader = require_once APP_BASE_PATH . '/vendor/autoload.php';
 
-require SENDMAIL_COMPOSER_INSTALL;
-
-use PDS\SendMailCommand;
-use PDS\PDSApplication;
-
-$application = new PDSApplication;
-$application->add(new SendMailCommand('sendmail'));
-$application->run();
-
-unset($application);
+// Use and start the application.
+$app = new \PDS\PDSApplication('zbateson/php-dummy-sendmail', '@VERSION@');
+$app->run();
