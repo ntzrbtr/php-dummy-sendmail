@@ -138,7 +138,7 @@ class SendMailCommand extends Command
                 }
                 list($usec, $sec) = explode(" ", microtime());
                 $usec = substr($usec, 2, 6);
-                $file = date(str_replace('u', $usec, $ts), $sec);
+                $file = date(str_replace('u', $usec, $ts), (int)$sec);
             }
             $ext = $input->getOption('file-extension');
             if (!empty($ext)) {
