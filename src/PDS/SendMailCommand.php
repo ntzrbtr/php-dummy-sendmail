@@ -166,6 +166,6 @@ class SendMailCommand extends Command
             @chmod($file, 0744);
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }

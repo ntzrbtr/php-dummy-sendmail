@@ -16,10 +16,10 @@
   ],
   "require": {
     "php": ">=7.4",
-    "symfony/console": "~4.2.0"
+    "symfony/console": "~5.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "^9.6"
   },
   "autoload": {
     "psr-4": {
